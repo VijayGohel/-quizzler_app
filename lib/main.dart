@@ -31,7 +31,6 @@ class _QuizPageState extends State<QuizPage> {
 
   QuizBrain quiz = new QuizBrain();
 
-  int questionNumber = 0;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -44,7 +43,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                quiz.question[questionNumber].question,
+                quiz.getQuestion(quiz.questionNumber),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -68,13 +67,13 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                if (quiz.question[questionNumber].questionAnswer)
+                if (quiz.getQuestionAnswer(quiz.questionNumber))
                   print("got it right");
                 else
                   print("got it wrong");
 
                 setState(() {
-                  questionNumber++;
+                  quiz.incrementQuestionNumber();
                   scoreBoard.add(
                     Icon(
                       Icons.check,
@@ -99,12 +98,12 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                if (!quiz.question[questionNumber].questionAnswer)
+                if (!quiz.getQuestionAnswer(quiz.questionNumber))
                   print("got it right");
                 else
                   print("got it wrong");
                 setState(() {
-                  questionNumber++;
+                  quiz.incrementQuestionNumber();
                   scoreBoard.add(
                     Icon(
                       Icons.close,
