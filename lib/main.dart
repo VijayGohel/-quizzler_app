@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quizzler/Question.dart';
 import 'package:quizzler/QuizBrain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 void main() => runApp(Quizzler());
 
@@ -28,6 +28,46 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   List<Icon> scoreBoard = [];
+  void checkAnswer(bool userAnswer) {
+    setState(() {
+      if (userAnswer == quiz.getQuestionAnswer(quiz.questionNumber)) {
+        scoreBoard.add(
+          Icon(
+            Icons.check,
+            color: Colors.green,
+          ),
+        );
+      } else {
+        scoreBoard.add(
+          Icon(
+            Icons.close,
+            color: Colors.red,
+          ),
+        );
+      }
+      if (quiz.questionNumber == quiz.getLength() - 1) {
+        Alert(
+          context: context,
+          //type: AlertType.error,
+          title: "Finished!",
+          desc: "You have reached end of the quiz",
+          buttons: [
+            DialogButton(
+              child: Text(
+                "COOL",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+              onPressed: () => Navigator.pop(context),
+              width: 120,
+            )
+          ],
+        ).show();
+        quiz.resetQuestions();
+        scoreBoard.clear();
+      } else
+        quiz.incrementQuestionNumber();
+    });
+  }
 
   QuizBrain quiz = new QuizBrain();
 
@@ -67,20 +107,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                if (quiz.getQuestionAnswer(quiz.questionNumber))
-                  print("got it right");
-                else
-                  print("got it wrong");
-
-                setState(() {
-                  quiz.incrementQuestionNumber();
-                  scoreBoard.add(
-                    Icon(
-                      Icons.check,
-                      color: Colors.green,
-                    ),
-                  );
-                });
+                checkAnswer(true);
               },
             ),
           ),
@@ -98,19 +125,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                if (!quiz.getQuestionAnswer(quiz.questionNumber))
-                  print("got it right");
-                else
-                  print("got it wrong");
-                setState(() {
-                  quiz.incrementQuestionNumber();
-                  scoreBoard.add(
-                    Icon(
-                      Icons.close,
-                      color: Colors.red,
-                    ),
-                  );
-                });
+                checkAnswer(false);
               },
             ),
           ),
